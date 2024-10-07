@@ -3,6 +3,8 @@ let previousNumber = "";
 let currentOperator = "";
 let operatorPressed = false;
 let resultDisplayed = false;
+let errorState = false;
+
 function add(a, b){
     return a + b;
 }
@@ -28,6 +30,9 @@ function operate(operator, firstNumber, secondNumber){
         case "*":
             return multiply(Number(firstNumber), Number(secondNumber));
         case "/":
+            if (Number(secondNumber == 0)){
+                return "Error: Division by 0";
+            }
             return divide(Number(firstNumber), Number(secondNumber));
     }
 }   
@@ -37,6 +42,19 @@ function getButtonText(e){
 }
 
 function changeDisplay(choice){
+    if (errorState) {
+        if (choice === "C"){
+            display.textContent = "";
+            currentNumber = "";
+            previousNumber = "";
+            currentOperator = "";
+            operatorPressed = false;
+            resultDisplayed = false;
+            errorState = false; 
+        } else {
+            return;  
+        }
+    } else {
     if(!isNaN(choice)){
         if (operatorPressed || resultDisplayed){
             display.textContent = "";
@@ -87,6 +105,7 @@ function changeDisplay(choice){
                 resultDisplayed = false;
                 break;
 
+            }
         }
     }
 }
