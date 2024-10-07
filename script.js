@@ -122,4 +122,4 @@ buttons.forEach((button) => {
 });
 
 
-
+// add +/-, %, . functionality
