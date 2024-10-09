@@ -62,7 +62,7 @@ function changeDisplay(choice){
             resultDisplayed = false;
         }
         currentNumber += choice;
-        display.textContent += choice;
+        display.textContent = currentNumber;
     } else {
         switch (choice){
             case ".":
