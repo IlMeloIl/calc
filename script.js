@@ -65,6 +65,31 @@ function changeDisplay(choice){
         display.textContent += choice;
     } else {
         switch (choice){
+            case ".":
+                if (!currentNumber.includes(".")){
+                    if (currentNumber === ""){
+                        currentNumber = "0.";
+                    } else {
+                        currentNumber += ".";
+                    }
+                    display.textContent = currentNumber;
+                }
+                break;
+            case "+/-":
+                if (currentNumber !== 0 && currentNumber !== ""){
+                    currentNumber = (parseFloat(currentNumber) * -1).toString();
+                    display.textContent = currentNumber;
+                }
+                break;
+            case "%":
+                if (previousNumber && currentOperator){
+                    currentNumber = (parseFloat(previousNumber) * parseFloat(currentNumber / 100)).toString();
+                    display.textContent = currentNumber;
+                } else {
+                    currentNumber = (parseFloat(currentNumber / 100)).toString();
+                    display.textContent = currentNumber;
+                }
+                break;
             case "+":
             case "-":
             case "*":
