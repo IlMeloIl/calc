@@ -12,17 +12,26 @@ body{
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    height: 500px;
-    width: 500px;
+    height: 400px;
+    width: 300px;
+    background-color: #202020;
+    border-radius: 10px;
 }
 
 .display {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-end;
     height: 75px;
     width: 80%;
+    color: white;
+}
+
+.digits {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
 .row {
@@ -31,14 +40,29 @@ body{
     justify-content: space-evenly;
     height: 20px;
     width: 100%;
+    gap: 5px;
 }
 
 button{
-    width: 50px;
+    width: 70px;
+    height: 40px;
+    color: white;
+    border: 0;
+    border-radius: 15px;
 }
 
-#btn-0 {
-    width: 160px;
+.equals-btn {
+    background-color: #76b9ed;
 }
 
-/* style entire calculator */
+.dark-grey-color-class {
+    background-color: #323232;
+}
+
+.light-grey-color-class {
+    background-color: #3b3b3b;
+}
+
+.null-btn {
+    opacity: 0;
+}
