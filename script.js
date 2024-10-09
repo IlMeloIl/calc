@@ -1,148 +1,77 @@
-let currentNumber = "";
-let previousNumber = "";
-let currentOperator = "";
-let operatorPressed = false;
-let resultDisplayed = false;
-let errorState = false;
+let display = document.querySelector('.display');
+let currentInput = '';
+let previousInput = '';
+let operation = null;
+let shouldResetScreen = false;
 
-function add(a, b){
-    return a + b;
-}
+document.querySelector('.digits').addEventListener('click', handleButtonClick);
 
-function subtract(a, b){
-    return a - b;
-}
+function handleButtonClick(event) {
+    if (event.target.tagName !== 'BUTTON') return;
+    
+    const value = event.target.textContent;
 
-function multiply(a, b){
-    return a * b;
-}
-
-function divide(a, b){
-    return a / b;
-}
-
-function operate(operator, firstNumber, secondNumber){
-    switch(operator) {
-        case "+": 
-            return add(Number(firstNumber), Number(secondNumber));
-        case "-":
-            return subtract(Number(firstNumber), Number(secondNumber));
-        case "*":
-            return multiply(Number(firstNumber), Number(secondNumber));
-        case "/":
-            if (Number(secondNumber == 0)){
-                return "Error: Division by 0";
-            }
-            return divide(Number(firstNumber), Number(secondNumber));
+    if ('0123456789.'.includes(value)) {
+        appendNumber(value);
+    } else if ('+-*/'.includes(value)) {
+        setOperation(value);
+    } else if (value === '=') {
+        calculate();
+    } else if (value === 'C') {
+        clear();
+    } else if (value === '%') {
+        percent();
+    } else if (value === '+/-') {
+        negate();
     }
-}   
 
-function getButtonText(e){
-    return e.target.textContent
+    updateDisplay();
 }
 
-function changeDisplay(choice){
-    if (errorState) {
-        if (choice === "C"){
-            display.textContent = "";
-            currentNumber = "";
-            previousNumber = "";
-            currentOperator = "";
-            operatorPressed = false;
-            resultDisplayed = false;
-            errorState = false; 
-        } else {
-            return;  
-        }
-    } else {
-    if(!isNaN(choice)){
-        if (operatorPressed || resultDisplayed){
-            display.textContent = "";
-            operatorPressed = false;
-            resultDisplayed = false;
-        }
-        currentNumber += choice;
-        display.textContent = currentNumber;
-    } else {
-        switch (choice){
-            case ".":
-                if (!currentNumber.includes(".")){
-                    if (currentNumber === ""){
-                        currentNumber = "0.";
-                    } else {
-                        currentNumber += ".";
-                    }
-                    display.textContent = currentNumber;
-                }
-                break;
-            case "+/-":
-                if (currentNumber !== 0 && currentNumber !== ""){
-                    currentNumber = (parseFloat(currentNumber) * -1).toString();
-                    display.textContent = currentNumber;
-                }
-                break;
-            case "%":
-                if (previousNumber && currentOperator){
-                    currentNumber = (parseFloat(previousNumber) * parseFloat(currentNumber / 100)).toString();
-                    display.textContent = currentNumber;
-                } else {
-                    currentNumber = (parseFloat(currentNumber / 100)).toString();
-                    display.textContent = currentNumber;
-                }
-                break;
-            case "+":
-            case "-":
-            case "*":
-            case "/":
-                if (previousNumber && currentOperator){
-                    if (!currentNumber){
-                        currentOperator = choice;
-                    } else {
-                        previousNumber = operate(currentOperator, previousNumber, currentNumber);
-                        display.textContent = previousNumber;
-                        currentOperator = choice;
-                        currentNumber = "";
-                    }
-                    
-                } else {
-                    previousNumber = currentNumber;
-                    currentOperator = choice;
-                    currentNumber = "";
-                }
-                operatorPressed = true;
-                break;
-            case "=":
-                if (previousNumber && currentOperator){
-                    let result = operate(currentOperator, previousNumber, currentNumber);
-                    display.textContent = result;
-                    previousNumber = result;
-                    currentNumber = "";
-                    currentOperator = "";
-                    resultDisplayed = true;
-                }
-                break;
-            case "C":
-                display.textContent = "";
-                currentNumber = "";
-                previousNumber = "";
-                currentOperator = "";
-                operatorPressed = false;
-                resultDisplayed = false;
-                break;
-
-            }
-        }
+function appendNumber(number) {
+    if (shouldResetScreen) {
+        currentInput = '';
+        shouldResetScreen = false;
     }
+    currentInput += number;
 }
 
+function setOperation(op) {
+    if (operation !== null) calculate();
+    previousInput = currentInput;
+    operation = op;
+    shouldResetScreen = true;
+}
 
-let display = document.querySelector(".display");
+function calculate() {
+    if (operation === null || shouldResetScreen) return;
+    let result;
+    const prev = parseFloat(previousInput);
+    const current = parseFloat(currentInput);
+    switch (operation) {
+        case '+': result = prev + current; break;
+        case '-': result = prev - current; break;
+        case '*': result = prev * current; break;
+        case '/': result = prev / current; break;
+    }
+    currentInput = result.toString();
+    operation = null;
+}
 
-const buttons = document.querySelectorAll("button");
-buttons.forEach((button) => {
-    button.addEventListener("click", (e)=>{
-        let choice = getButtonText(e);
-        changeDisplay((choice));
-    });
-});
+function clear() {
+    currentInput = '';
+    previousInput = '';
+    operation = null;
+}
 
+function percent() {
+    currentInput = (parseFloat(currentInput) / 100).toString();
+}
+
+function negate() {
+    currentInput = (parseFloat(currentInput) * -1).toString();
+}
+
+function updateDisplay() {
+    display.textContent = currentInput || '0';
+}
