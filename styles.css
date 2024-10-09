@@ -19,7 +19,6 @@ body{
 }
 
 .display {
-    /* border: 1px solid black; */
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
