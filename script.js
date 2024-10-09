@@ -1,5 +1,5 @@
 let display = document.querySelector('.display');
-let currentInput = '';
+let currentInput = '0';
 let previousInput = '';
 let operation = null;
 let shouldResetScreen = false;
@@ -11,8 +11,10 @@ function handleButtonClick(event) {
     
     const value = event.target.textContent;
 
-    if ('0123456789.'.includes(value)) {
+    if ('0123456789'.includes(value)) {
         appendNumber(value);
+    } else if (value === '.') {
+        appendDecimal();
     } else if ('+-*/'.includes(value)) {
         setOperation(value);
     } else if (value === '=') {
@@ -23,17 +25,29 @@ function handleButtonClick(event) {
         percent();
     } else if (value === '+/-') {
         negate();
+    } else if (value === '←') {
+        backspace();
     }
 
     updateDisplay();
 }
 
 function appendNumber(number) {
-    if (shouldResetScreen) {
-        currentInput = '';
+    if (currentInput === '0' || shouldResetScreen) {
+        currentInput = number;
         shouldResetScreen = false;
+    } else {
+        currentInput += number;
     }
-    currentInput += number;
+}
+
+function appendDecimal() {
+    if (shouldResetScreen) {
+        currentInput = '0.';
+        shouldResetScreen = false;
+    } else if (!currentInput.includes('.')) {
+        currentInput += '.';
+    }
 }
 
 function setOperation(op) {
@@ -52,14 +66,14 @@ function calculate() {
         case '+': result = prev + current; break;
         case '-': result = prev - current; break;
         case '*': result = prev * current; break;
-        case '/': result = prev / current; break;
+        case '/': result = current !== 0 ? prev / current : 'Error'; break;
     }
     currentInput = result.toString();
     operation = null;
 }
 
 function clear() {
-    currentInput = '';
+    currentInput = '0';
     previousInput = '';
     operation = null;
 }
@@ -72,6 +86,16 @@ function negate() {
     currentInput = (parseFloat(currentInput) * -1).toString();
 }
 
-function updateDisplay() {
-    display.textContent = currentInput || '0';
+function backspace() {
+    if (currentInput.length > 1) {
+        currentInput = currentInput.slice(0, -1);
+    } else {
+        currentInput = '0';
+    }
 }
+
+function updateDisplay() {
+    display.textContent = currentInput;
+}
+
+updateDisplay();
